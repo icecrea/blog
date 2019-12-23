@@ -1,9 +1,7 @@
 
 # Summary
 
-* [icecrea学习笔记](README.md)
-
-
+* [简介](README.md)
 * [Java]()
 * [算法](算法/README.md)
     * [总结篇]()

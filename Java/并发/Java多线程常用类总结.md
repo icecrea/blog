@@ -8,7 +8,7 @@ ThreadPoolExecutor的submit()方法继承于抽象父类AbstractExecutorService�
 
 ![](https://icecrea-blog-1300414836.cos.ap-beijing.myqcloud.com/blog/abstractexecutorservice公共方法.png)
 
-Future接口如下图，可以查看任务是否取消或完成，取消任务。通过get()方法获取结果，支持超时机制。需注意get()方法为同步方法，若任务没执行完，线程会阻塞，进入WAITING状态。
+Future接口如下图，可以查看任务是否取消，是否完成，执行取消任务。通过get()方法获取结果，支持超时机制。需注意get()方法为同步方法，若任务没执行完，线程会阻塞，进入WAITING状态。
 
 ![](https://icecrea-blog-1300414836.cos.ap-beijing.myqcloud.com/blog/Future接口方法.png)
 

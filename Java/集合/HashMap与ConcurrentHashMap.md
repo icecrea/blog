@@ -75,6 +75,16 @@ static final class Segment<K,V> extends ReentrantLock implements Serializable {
 通过 key 定位到 Segment
 
 
+## 5.为什么concurrentHashMap里的value不能为空，而hashmap可以？
+参考：https://juejin.im/post/5df9abc2f265da33ca40139d
+
+总结：
+
+多线程环境下存在二义性：即当map.get(key) == null时，无法判断是没有Key的映射，还是value值为null。
+
+hashmap线程不安全，可以默认在单线程使用，虽然还是存在二义性问题，此时可以通过map.contains(key)来判断key是否存在。而concurrentHashMap在多线程下使用，可能存在其它线程更新对应值的情况。无法再通过containskey()方法验证。
+
+
 
 
 

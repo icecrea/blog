@@ -28,7 +28,7 @@
 * [计算机网络]()
     * [TCP总结](计算机网络/TCP总结.md)
 * [MYSQL]()
-    * [Mysql索引模型](MYSQL/Mysql索引.md)
+    * [Mysql索引总结](MYSQL/Mysql索引总结.md)
     * [count函数性能比较与优化](MYSQL/count函数性能比较与优化.md)
     * [InnoDB刷脏页策略](MYSQL/InnoDB刷脏页策略.md)
     * [Mysql一致性视图与隔离级别](MYSQL/Mysql一致性视图.md)

@@ -1,6 +1,6 @@
-## Mysql排序是如何实现的？
+# Mysql排序
 
-### 背景
+## 背景
 
 ```
 表定义
@@ -17,7 +17,7 @@ CREATE TABLE `t` (
 
 执行语句`select city,name,age from t where city='杭州' order by name limit 1000 ;` 里面用到了排序，它是如何执行的呢？
 
-### 全字段排序策略
+## 全字段排序策略
 
 通过explain分析，看到Extra 这个字段有“Using filesort”，表示的就是需要排序，MySQL 会给每个线程分配一块内存用于排序，称为 `sort_buffer`。
 
@@ -30,7 +30,7 @@ CREATE TABLE `t` (
 
 “按 name 排序”这个动作，如果要排序的数据量小于 sort_buffer_size，排序就在内存中完成。否则会使用磁盘临时文件辅助排序。
 
-### rowid排序策略
+## rowid排序策略
 
 对全字段排序来说，如果查询字段太多，sort_buffer不足，分成临时文件排序会导致性能很差。
 
@@ -51,7 +51,7 @@ SET max_length_for_sort_data = 16;
 
 可以看出，比全字段排序多了一次回表，从sort_buffer排序后，还需要再回主键索引取其它需要的值。
 
-### 全字段排序与rowid排序比较
+## 全字段排序与rowid排序比较
 
 MySQL 的一个设计思想：**如果内存够，就要多利用内存，尽量减少磁盘访问。**
 

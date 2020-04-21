@@ -2,9 +2,9 @@
 
 
 
-## HTTP消息格式
+## HTTP介绍
 
-### 请求消息
+**请求消息**
 
 请求消息格式：请求行（request line）、消息头（header）、空行和消息体四个部分
 
@@ -12,9 +12,7 @@
 - 消息头Headers：如Host,User-Agent,Accept,Accept-Language,Accept-Encoding,Connection,Content-Type,Content-Length
 - 消息体Body：不是所有的请求都有一个 body：例如获取资源的请求，GET，HEAD，DELETE 和 OPTIONS，通常它们不需要 body。
 
-HTTP协议请求方法：options,head,get,post,put,delete,trace,connect
-
-### 响应消息
+**响应消息**
 
 HTTP响应格式：状态行、消息头、空行和消息体。
 
@@ -22,11 +20,16 @@ HTTP响应格式：状态行、消息头、空行和消息体。
 - 消息头Headers：同上
 - 消息体Body
 
+**HTTP协议请求方法**：options,head,get,post,put,delete,trace,connect
 
 
-## HTTPS
 
-**HTTPS**（Hypertext Transfer Protocol Secure：超文本传输安全协议）是一种透过计算机网络进行安全通信的传输协议。HTTPS 经由 HTTP 进行通信，但利用 SSL/TLS 来加密数据包。
+## HTTPS介绍
+
+**HTTPS**（Hypertext Transfer Protocol Secure：超文本传输安全协议）是一种透过计算机网络进行安全通信的传输协议。HTTPS 经由 HTTP 进行通信，但利用 SSL/TLS 来加密数据包。加密采用对称加密，但对称加密的密钥用服务器方的证书进行了非对称加密。
+
+- 对称加密：密钥只有一个，加密解密为同一个密码，且加解密速度快，典型的对称加密算法有DES、AES等；
+- 非对称加密：密钥成对出现（且根据公钥无法推知私钥，根据私钥也无法推知公钥），加密解密使用不同密钥（公钥加密需要私钥解密，私钥加密需要公钥解密），相对对称加密速度较慢，典型的非对称加密算法有RSA、DSA等。
 
 HTTPS 默认工作在 TCP 协议443端口，它的工作流程一般如以下方式：
 
@@ -36,7 +39,12 @@ HTTPS 默认工作在 TCP 协议443端口，它的工作流程一般如以下方
 - 4、SSL 安全加密隧道协商完成
 - 5、网页以加密的方式传输，用协商的对称加密算法和密钥加密，保证数据机密性；用协商的hash算法进行数据完整性保护，保证数据不被篡改。
 
+## HTTP和HTTPS区别
 
+- HTTPS需要申请CA证书
+- HTTP协议运行在TCP之上，传输内容明文，HTTPS运行在SSL/TLS之上，SSL/TLS运行在TCP之上，传输内经过加密
+- 端口不通，HTTP80，HTTPS443
+- HTTPS可以有效的防止运营商劫持
 
 
 
@@ -51,6 +59,8 @@ HTTPS 默认工作在 TCP 协议443端口，它的工作流程一般如以下方
 是服务端根据逻辑,发送一个状态码（302）,告诉浏览器重新去请求那个地址.所以地址栏显示的是新的URL.
 
 https://www.cnblogs.com/Qian123/p/5345527.html
+
+
 
 
 ## HTTP状态码：
@@ -77,13 +87,13 @@ https://www.cnblogs.com/Qian123/p/5345527.html
 
 - 4xx 客户端错误，请求包含语法错误或无法完成请求
 
-  400 请求参数有误，包含语法错误，无法被服务器解析
+  400 Bad Request 请求参数有误，包含语法错误，无法被服务器解析
 
-  401 请求要求用户的身份认证
+  401 Unautorized 请求要求用户的身份认证
 
-  403 服务器理解请求客户端的请求，但是拒绝执行此请求
+  403 Forbidden 服务器理解请求客户端的请求，但是拒绝执行此请求
 
-  404 请求资源不存在
+  404 Not Found 请求资源不存在
 
   405 请求方法不允许
 
@@ -92,6 +102,54 @@ https://www.cnblogs.com/Qian123/p/5345527.html
   500 Internal Server Error 服务器不知道如何处理，服务器内部错误
   
   504 Gateway Timeout 网关超时。扮演网关或者代理的服务器无法在规定的时间内获得想要的响应。
+
+## HTTP1.0 / 1.1 / 2.0都有什么不同
+
+优化方向：**带宽和延迟**。带宽已经不是瓶颈，延迟分为三个点：**浏览器阻塞HOL，DNS查询，建立TCP连接**
+
+**HTTP1.0**
+
+- 没有keep-alive机制（Connection: KeepAlive），无法复用tcp连接，每次请求都需要和服务器三次握手建立tcp连接，慢启动，完成请求后断开连接。
+- 浏览器阻塞，Head of Line (HOL) Blocking。浏览器会因为一些原因阻塞请求。浏览器对于同一个域名，同时只能有 4 个连接（这个根据浏览器内核不同可能会有所差异），超过浏览器最大连接数限制，后续请求就会被阻塞。请求队列的第一个请求因为服务器正忙（或请求格式问题等其他原因），导致后面的请求被阻塞。
+
+> **队头阻塞**（**Head-of-line blocking**或缩写为**HOL blocking**）在计算机网络的范畴中是一种性能受限的现象。它的原因是一列的第一个数据包（队头）受阻而导致整列数据包受阻。例如它有可能在缓存式输入的交换机中出现，有可能因为传输顺序错乱而出现，亦有可能在HTTP流水线中有多个请求的情况下出现。
+
+**HTTP1.1**
+
+- **长连接：KeepAlive机制**，支持复用tcp连接，通过header中的connection是close或者Keep-Alive控制
+- **流水线：Pipeline机制**。HTTP/1.1的持续连接有非流水线方式和流水线方式 。流水线方式是客户在收到HTTP的响应报文之前就能接着发送新的请求报文。与之相对应的非流水线方式是客户在收到前一个响应后才能发送下一个请求。
+- **缓存处理**：在HTTP1.0中主要使用header里的If-Modified-Since,Expires来做为缓存判断的标准，HTTP1.1则引入了更多的缓存控制策略例如Entity tag，If-Unmodified-Since, If-Match, If-None-Match等更多可供选择的缓存头来控制缓存策略
+- **Host头处理**，在HTTP1.0中认为每台服务器都绑定一个唯一的IP地址，因此，请求消息中的URL并没有传递主机名（hostname）。但随着虚拟主机技术的发展，在一台物理服务器上可以存在多个虚拟主机（Multi-homed Web Servers），并且它们共享一个IP地址。HTTP1.1的请求消息和响应消息都应支持Host头域，且请求消息中如果没有Host头域会报告一个错误（400 Bad Request）
+- **带宽优化，断点续传**：HTTP1.0中，存在一些浪费带宽的现象，例如客户端只是需要某个对象的一部分，而服务器却将整个对象送过来了，并且不支持断点续传功能，HTTP1.1则在请求头引入了range头域，它允许只请求资源的某个部分，即返回码是206（Partial Content），这样就方便了开发者自由的选择以便于充分利用带宽和连接。
+- **错误状态响应码** :在HTTP1.1中新增了24个错误状态响应码，如409（Conflict）表示请求的资源与资源的当前状态发生冲突；410（Gone）表示服务器上的某个资源被永久性的删除。
+
+**HTTP2.0**
+
+- 完全多路复用，而非有序并阻塞的。针对HTTP高延迟的问题，SPDY优雅的采取了多路复用（multiplexing）。多路复用通过多个请求stream共享一个tcp连接的方式，解决了HOL blocking的问题，降低了延迟同时提高了带宽的利用率。
+- 将通信的基本单位缩小为帧
+- 首部压缩，降低了开销
+- 采用二进制格式而非文本格式
+
+
+
+https://juejin.im/entry/5981c5df518825359a2b9476
+
+
+
+## TCP/IP的四层结构，协议
+
+|            | 协议                 |      |
+| ---------- | -------------------- | ---- |
+| 应用层     | ping,dns,ospf,telnet |      |
+| 传输层     | tcp,udp              |      |
+| 网络层     | icmp,ip              |      |
+| 数据链路层 | arp,rarp             |      |
+
+
+
+
+
+
 
 ## Cookie与Session机制
 
@@ -124,6 +182,8 @@ https://juejin.im/entry/5766c29d6be3ff006a31b84e
 
 
 
+
+[javaguide](https://github.com/Snailclimb/JavaGuide/blob/master/docs/network/计算机网络.md)
 
 [304介绍](https://blog.csdn.net/huwei2003/article/details/70139062)
 

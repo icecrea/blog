@@ -8,36 +8,6 @@ https://www.zhihu.com/question/31203609
 
 
 
-## cookie与session机制
-
-Cookies是服务器在本地机器上存储的小段文本并随每一个请求发送至同一个服务器。网络服务器用HTTP头向客户端发送cookies，在客户终端，浏览器解析这些cookies并将它们保存为一个本地文件，它会自动将同一服务器的任何请求缚上这些cookies 。cookie机制采用的是在客户端保持状态的方案。它是在用户端的会话状态的存贮机制，他需要用户打开客户端的cookie支持。
-
-cookie的内容主要包括：**名字，值，过期时间，路径和域。**路径与域一起构成cookie的作用范围。若不设置过期时间，则表示这个cookie的生命期为浏览器会话期间，关闭浏览器窗口，cookie就消失。这种生命期为浏览器会话期的cookie被称为会话cookie。会话cookie一般不存储在硬盘上而是保存在内存里，当然这种行为并不是规范规定的。若设置了过期时间，浏览器就会把cookie保存到硬盘上，关闭后再次打开浏览器，这些cookie仍然有效直到超过设定的过期时间。
-
-
-
-session机制是一种服务器端的机制，服务器使用一种类似于散列表的结构来保存信息。
-
-当程序需要为某个客户端的请求创建一个session时，服务器首先检查这个客户端的请求里是否已包含了一个session标识（称为session id），如果已包含则说明以前已经为此客户端创建过session，服务器就按照session id把这个session检索出来使用（检索不到，会新建一个），如果客户端请求不包含session id，则为此客户端创建一个session并且生成一个与此session相关联的session id，session id的值应该是一个既不会重复，又不容易被找到规律以仿造的字符串，这个session id将被在本次响应中返回给客户端保存。
-
-两者不同？
-
-1. 存取方式不同。Cookie中只能保管ASCII字符串，Session中能够存取任何类型的数据,也能够直接保管Java Bean乃至任何Java类,对象。能够把Session看做是一个Java容器类。
-
-2. 隐私策略的不同。Cookie对客户端可见，隐私信息需要加密。session对客户端透明，不存在敏感信息泄露风险。
-
-3. 服务器压力不同。Session是保管在服务器端的，每个用户都会产生一个Session，耗费内存。Cookie保管在客户端，不占用服务器资源。
-
-4. 浏览器支持的不同。假如客户端禁用了Cookie，需要运用Session以及URL地址重写。需要注意的是一切的用到Session程序的URL都要进行URL地址重写，否则Session会话跟踪还会失效。
-
-5. 跨域支持上的不同
-
-   Cookie支持跨域名访问，例如将domain属性设置为“.biaodianfu.com”，则以“.biaodianfu.com”为后缀的一切域名均能够访问该Cookie。跨域名Cookie如今被普遍用在网络中，例如Google、Baidu、Sina等。而Session则不会支持跨域名访问。Session仅在他所在的域名内有效。
-
-https://juejin.im/entry/5766c29d6be3ff006a31b84e
-
-
-
 ## 深拷贝和浅拷贝是什么？
 
 
